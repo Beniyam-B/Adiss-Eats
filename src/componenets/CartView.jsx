@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 function CartView() {
@@ -20,7 +21,12 @@ function CartView() {
           <button onClick={() => removeFromCart(entry.item.id)}>Remove</button>
         </div>
       ))}
-      {cart.length > 0 && <p className="cart-total">Total: ETB {total}</p>}
+      {cart.length > 0 && (
+        <>
+          <p className="cart-total">Total: ETB {total}</p>
+          <Link to="/checkout" className="checkout-link">Go to Checkout</Link>
+        </>
+      )}
     </div>
   );
 }
