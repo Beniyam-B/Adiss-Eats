@@ -23,21 +23,21 @@ function Login() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth">
       <h2>Sign In</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
+      <form onSubmit={handleSubmit} className="auth__form">
+        <label className="auth__label">
           Name
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          <input className="auth__input" type="text" value={name} onChange={(e) => setName(e.target.value)} />
         </label>
-        <label>
+        <label className="auth__label">
           Phone Number
-          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0912345678" />
+          <input className="auth__input" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0912345678" />
         </label>
-        {phoneError && <p className="field-error">{phoneError}</p>}
-        <button type="submit">Continue</button>
+        {phoneError && <p className="auth__error">{phoneError}</p>}
+        <button type="submit" className="auth__submit">Continue</button>
       </form>
-      <p className="auth-switch">
+      <p className="auth__switch">
         Don't have an account? <Link to="/register">Register</Link>
       </p>
     </div>

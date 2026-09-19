@@ -18,3 +18,55 @@ A food ordering web app built with React + Vite as part of the CodeOps Full Stac
 - Plain CSS (no framework)
 
 ## Project Structure
+
+src/
+main.jsx Entry point — mounts App, wraps it in ErrorBoundary, AuthProvider, CartProvider, BrowserRouter
+App.jsx Route declarations
+Layout.jsx Persistent shell (Header + Footer) wrapping every page via <Outlet />
+App.css All app styling
+index.css Global resets
+
+pages/
+Home.jsx Specials teaser + full menu, search, fasting filter
+Specials.jsx Dedicated "Today's Specials" page
+Login.jsx Sign in (name + phone, regex-validated)
+Register.jsx Create account (phone, password, confirm password)
+Cart.jsx Cart as its own page
+Checkout.jsx Delivery form, order confirmation — protected route
+NotFound.jsx 404 fallback
+
+componenets/
+Header.jsx Nav links, cart button, login/logout state
+Footer.jsx
+MenuItemCard.jsx Single dish card, used across Home/Specials
+CartView.jsx Cart contents, quantity controls — used by Cart.jsx
+Modal.jsx Reusable portal-based modal shell
+DishDetailModal.jsx Dish detail content rendered inside Modal
+ErrorBoundary.jsx Class component catching render crashes
+ProtectedRoute.jsx Redirects to /login if not signed in
+
+context/
+CartContext.jsx Cart state — add/remove/update quantity/clear, persisted to localStorage
+AuthContext.jsx Login state — login/logout, persisted to localStorage
+
+data/
+menu.json Full menu, mirrors the real /menu/ API shape
+specials.json Featured items, mirrors /menu/specials
+
+public/
+images/ Dish photos, filenames matching each item's nameEn exactly
+
+
+## Data
+
+`src/data/menu.json` and `src/data/specials.json` mirror the real API's response shape exactly (`{ status, data: [...] }`, same field names). Both are imported directly for now rather than fetched — a future step will swap the import for an actual `fetch()` call to `addis-eats-backend.onrender.com`, without needing to change anything else.
+
+## Getting Started
+
+npm install
+npm run dev
+
+
+Opens at `http://localhost:5173`.
+
+Sign-in is phone-based (no real backend auth yet — logging in with any valid-format Ethiopian number and a name works). Cart and login state both persist across refreshes via `localStorage`.
