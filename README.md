@@ -10,6 +10,9 @@ A food ordering web app built with React + Vite as part of the CodeOps Full Stac
 - Dish detail modal (built with React Portals) with full description, spice level, servings, and ingredients
 - Cart with quantity controls, persisted in `localStorage`
 - Loading/error states and an Error Boundary for resilience
+- Dedicated dish highlight page with heritage blurb and pairings (/dish/:id)
+- Two-column Cart and Checkout with VAT, delivery threshold, and coupon codes
+- Full CSS rewritten to BEM naming
 
 ## Tech Stack
 
