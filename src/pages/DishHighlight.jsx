@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
 import { useCart } from '../context/CartContext';
+import { useRecentlyViewed } from '../context/RecentlyViewedContext';
 import { getSpiceLevel, cleanSpiceLabel } from '../utils/spice';
+import Skeleton from '../componenets/Skeleton';
 
 const MENU_URL = 'https://addis-eats-backend.onrender.com/menu/';
 
@@ -33,12 +35,34 @@ function DishHighlight() {
   const { dishId } = useParams();
   const { data: menuData, loading, error } = useFetch(MENU_URL);
   const { addToCart } = useCart();
+  const { addViewed } = useRecentlyViewed();
   const [quantity, setQuantity] = useState(1);
   const [spiceChoice, setSpiceChoice] = useState('Traditional');
   const [injeraChoice, setInjeraChoice] = useState('standard');
   const [selectedSides, setSelectedSides] = useState([]);
 
-  if (loading) return <p className="status">Loading dish...</p>;
+  useEffect(() => {
+    if (!menuData) return;
+    const found = menuData.data.find((d) => d.id === dishId);
+    if (found) addViewed(found);
+  }, [menuData, dishId]);
+
+  if (loading) {
+    return (
+      <div className="dish-highlight">
+        <div className="dish-highlight__layout">
+          <Skeleton className="dish-highlight__image" />
+          <div className="dish-highlight__info">
+            <Skeleton className="skeleton-card__line skeleton-card__line--title" />
+            <Skeleton className="skeleton-card__line skeleton-card__line--short" />
+            <Skeleton className="skeleton-card__line" />
+            <Skeleton className="skeleton-card__line" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <p className="status status--error">Could not load this dish: {error}</p>;
 
   const item = menuData.data.find((d) => d.id === dishId);

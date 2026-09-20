@@ -5,7 +5,8 @@ import DishDetailModal from '../componenets/DishDetailModal';
 import { useFetch } from '../hooks/useFetch';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import DishImage from '../componenets/DishImage';
+import SkeletonCard from '../componenets/SkeletonCard';
+import { useRecentlyViewed } from '../context/RecentlyViewedContext';
 
 const SPECIALS_URL = 'https://addis-eats-backend.onrender.com/menu/specials';
 const MENU_URL = 'https://addis-eats-backend.onrender.com/menu/';
@@ -19,6 +20,7 @@ const TESTIMONIALS = [
 function Home() {
   const { user } = useAuth();
   const { addToCart } = useCart();
+  const { recentlyViewed } = useRecentlyViewed();
   const { data: specialsData, loading, error } = useFetch(SPECIALS_URL);
   const { data: menuData } = useFetch(MENU_URL);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -66,12 +68,12 @@ function Home() {
           {centerpiece && (
             <div className="hero__centerpiece">
               <p className="hero__centerpiece-label"><i className="fa-solid fa-crown"></i> Today's Centerpiece</p>
-                            <Link to={`/dish/${centerpiece.id}`} className="hero__centerpiece-card">
-                <DishImage
+              <Link to={`/dish/${centerpiece.id}`} className="hero__centerpiece-card">
+                <img
                   src={`/images/${encodeURIComponent(centerpiece.nameEn)}.jpg`}
                   alt={centerpiece.nameEn}
                   className="hero__centerpiece-image"
-                  />
+                />
                 <p className="hero__centerpiece-price">ETB {centerpiece.priceETB}</p>
               </Link>
             </div>
@@ -88,7 +90,13 @@ function Home() {
           <Link to="/menu">View All →</Link>
         </div>
 
-        {loading && <p className="status">Loading specials...</p>}
+        {loading && (
+          <div className="specials__grid">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        )}
         {error && <p className="status status--error">Could not load specials: {error}</p>}
 
         {specialsData && (
@@ -139,6 +147,22 @@ function Home() {
                 </div>
                 <button className="extras__add-btn" onClick={() => addToCart(item)}>+ Add</button>
               </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {recentlyViewed.length > 0 && (
+        <section className="extras">
+          <h2>Recently Viewed</h2>
+          <div className="extras__row">
+            {recentlyViewed.map((item) => (
+              <Link key={item.id} to={`/dish/${item.id}`} className="extras__card extras__card--link">
+                <div>
+                  <h4>{item.nameEn}</h4>
+                  <p className="extras__price">ETB {item.priceETB}</p>
+                </div>
+              </Link>
             ))}
           </div>
         </section>

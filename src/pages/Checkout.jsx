@@ -30,13 +30,16 @@ function Checkout() {
     }
   };
 
-  if (orderPlaced) {
+    if (orderPlaced) {
     return (
       <div className="checkout">
         <div className="info-box info-box--success">
           <h2><i className="fa-solid fa-circle-check"></i> Order Placed!</h2>
           <p>Thanks{user ? `, ${user.name}` : ''} — your order is on its way.</p>
-          <Link to="/" className="link-button">Back to Menu</Link>
+          <div className="checkout__confirmation-actions">
+            <Link to="/menu" className="link-button">Continue Shopping</Link>
+            <Link to="/" className="link-button link-button--outline">Back to Home</Link>
+          </div>
         </div>
       </div>
     );

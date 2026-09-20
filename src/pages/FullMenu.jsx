@@ -2,6 +2,7 @@ import { useState } from 'react';
 import MenuItemCard from '../componenets/MenuItemCard';
 import DishDetailModal from '../componenets/DishDetailModal';
 import { useFetch } from '../hooks/useFetch';
+import SkeletonCard from '../componenets/SkeletonCard';
 
 const MENU_URL = 'https://addis-eats-backend.onrender.com/menu/';
 
@@ -13,7 +14,18 @@ function FullMenu() {
   const [sortBy, setSortBy] = useState('default');
   const [selectedItem, setSelectedItem] = useState(null);
 
-  if (loading) return <p className="status">Loading menu...</p>;
+    if (loading) {
+    return (
+      <div className="full-menu">
+        <h2>Our Full Menu</h2>
+        <div className="menu-grid">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
   if (error) return <p className="status status--error">Could not load the menu: {error}</p>;
 
   const categoryNames = ['All Dishes', ...new Set(menuData.data.map((item) => item.category))];

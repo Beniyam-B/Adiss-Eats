@@ -1,10 +1,18 @@
+import { useEffect } from 'react';
 import Modal from './Modal';
+import DishImage from './DishImage';
 import { useCart } from '../context/CartContext';
+import { useRecentlyViewed } from '../context/RecentlyViewedContext';
 import { getSpiceLevel, cleanSpiceLabel } from '../utils/spice';
-import  DishImage from './DishImage';
 
 function DishDetailModal({ item, onClose }) {
   const { addToCart } = useCart();
+  const { addViewed } = useRecentlyViewed();
+
+  useEffect(() => {
+    addViewed(item);
+  }, [item]);
+
   const { nameEn, nameAm, description, priceETB, spiceLevel, servings, ingredients, isFasting, isSpecial } = item;
   const imageSrc = `/images/${encodeURIComponent(nameEn)}.jpg`;
   const spiceRating = getSpiceLevel(spiceLevel);

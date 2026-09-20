@@ -14,6 +14,11 @@ A food ordering web app built with React + Vite as part of the CodeOps Full Stac
 - Two-column Cart and Checkout with VAT, delivery threshold, and coupon codes
 - Full CSS rewritten to BEM naming
 - Hover animations and color transitions across buttons, cards, and links
+- Accessible modal (focus trap, Escape to close, focus returns on close)
+- Skip-to-content link and mobile hamburger nav
+- Sort menu by price/name, "Clear Filters" on empty results
+- Per-page browser tab titles, scroll-to-top on navigation
+- Graceful fallback image if a dish photo fails to load
 
 ## Tech Stack
 
