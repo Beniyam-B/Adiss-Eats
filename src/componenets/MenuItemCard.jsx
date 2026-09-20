@@ -1,5 +1,8 @@
 import { useCart } from '../context/CartContext';
 import { getSpiceLevel } from '../utils/spice';
+import  DishImage from './DishImage';
+import './MenuItemCard.css';
+
 
 function MenuItemCard({ item, onViewDetails }) {
   const { addToCart } = useCart();
@@ -9,7 +12,7 @@ function MenuItemCard({ item, onViewDetails }) {
 
   return (
     <article className="menu-card">
-      <img
+      <DishImage
         src={imageSrc}
         alt={nameEn}
         className="menu-card__image"

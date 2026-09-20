@@ -1,6 +1,7 @@
 import Modal from './Modal';
 import { useCart } from '../context/CartContext';
 import { getSpiceLevel, cleanSpiceLabel } from '../utils/spice';
+import  DishImage from './DishImage';
 
 function DishDetailModal({ item, onClose }) {
   const { addToCart } = useCart();
@@ -10,8 +11,8 @@ function DishDetailModal({ item, onClose }) {
 
   return (
     <Modal onClose={onClose}>
-      <img src={imageSrc} alt={nameEn} className="modal__image" />
-      <h2>{nameEn}</h2>
+      <DishImage src={imageSrc} alt={nameEn} className="modal__image" />
+      <h2 id="modal-heading">{nameEn}</h2>
       <p className="modal__amharic">{nameAm}</p>
       {isSpecial && (
         <p className="menu-card__badge menu-card__badge--special">

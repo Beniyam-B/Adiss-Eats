@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { useCart } from './context/CartContext';
 import Header from './componenets/Header';
 import Footer from './componenets/Footer';
+import Toast from './componenets/Toast';
 
 function Layout() {
   const { cart } = useCart();
@@ -9,9 +10,13 @@ function Layout() {
 
   return (
     <div className="app">
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <Header cartCount={totalItems} />
-      <Outlet />
+      <main id="main-content" tabIndex={-1}>
+        <Outlet />
+      </main>
       <Footer />
+      <Toast />
     </div>
   );
 }

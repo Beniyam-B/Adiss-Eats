@@ -2,14 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { calculateTotals } from '../utils/pricing';
 
 const PHONE_REGEX = /^(?:\+251|0)?[79]\d{8}$/;
-const DELIVERY_FEE = 60;
-const FREE_DELIVERY_THRESHOLD = 1000;
-const VAT_RATE = 0.15;
 
 function Checkout() {
-  const { cart, clearCart } = useCart();
+  const { cart, clearCart, appliedCoupon } = useCart();
   const { user } = useAuth();
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState(user?.phone || '');
@@ -17,10 +15,7 @@ function Checkout() {
   const [errors, setErrors] = useState({});
   const [orderPlaced, setOrderPlaced] = useState(false);
 
-  const subtotal = cart.reduce((sum, entry) => sum + entry.item.priceETB * entry.quantity, 0);
-  const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE;
-  const vat = subtotal * VAT_RATE;
-  const total = subtotal + deliveryFee + vat;
+  const { deliveryFee, discount, vat, total } = calculateTotals(cart, appliedCoupon);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -87,12 +82,26 @@ function Checkout() {
 
       <aside className="receipt">
         <h2>Order Summary</h2>
-        {cart.map((entry) => (
-          <div key={entry.item.id} className="receipt__row">
-            <span>{entry.item.nameEn} × {entry.quantity}</span>
-            <span>ETB {entry.item.priceETB * entry.quantity}</span>
+        {cart.map((entry) => {
+          const unitPrice = entry.item.priceETB + (entry.extraPrice || 0);
+          return (
+            <div key={entry.cartLineId} className="receipt__row">
+              <span>
+                {entry.item.nameEn} × {entry.quantity}
+                {entry.customization && (
+                  <><br /><small>{entry.customization.spiceLevel} · {entry.customization.injera}</small></>
+                )}
+              </span>
+              <span>ETB {unitPrice * entry.quantity}</span>
+            </div>
+          );
+        })}
+        {discount > 0 && (
+          <div className="receipt__row receipt__row--discount">
+            <span>Coupon ({appliedCoupon})</span>
+            <span>-ETB {discount.toFixed(2)}</span>
           </div>
-        ))}
+        )}
         <div className="receipt__row">
           <span>Delivery Fee</span>
           <span>{deliveryFee === 0 ? 'Free' : `ETB ${deliveryFee.toFixed(2)}`}</span>

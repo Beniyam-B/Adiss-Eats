@@ -1,3 +1,7 @@
+import { Link } from 'react-router-dom';
+import './Footer.css';
+
+
 function Footer() {
   return (
     <footer className="footer">
@@ -31,9 +35,9 @@ function Footer() {
       <div className="footer__bottom">
         <p>© 2026 Addis Eats. Authentic Ethiopian & Eritrean Cuisine.</p>
         <div className="footer__links">
-          <a href="#" className="footer__link">About Us</a>
-          <a href="#" className="footer__link">Privacy Policy</a>
-          <a href="#" className="footer__link">Terms of Service</a>
+          <Link to="/menu" className="footer__link">About Us</Link>
+          <Link to="/legal" className="footer__link">Privacy Policy</Link>
+          <Link to="/legal" className="footer__link">Terms of Service</Link>
         </div>
       </div>
     </footer>

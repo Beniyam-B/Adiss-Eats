@@ -13,6 +13,7 @@ A food ordering web app built with React + Vite as part of the CodeOps Full Stac
 - Dedicated dish highlight page with heritage blurb and pairings (/dish/:id)
 - Two-column Cart and Checkout with VAT, delivery threshold, and coupon codes
 - Full CSS rewritten to BEM naming
+- Hover animations and color transitions across buttons, cards, and links
 
 ## Tech Stack
 

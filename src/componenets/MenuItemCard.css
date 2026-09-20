@@ -1,0 +1,87 @@
+/* Note: .menu-card's surface (background/radius/shadow) and hover-lift
+   are shared with other cards and stay in App.css. Only what's unique
+   to this component lives here. */
+
+.menu-card {
+  padding: 1.25rem;
+  color: var(--color-text);
+}
+
+.menu-card__image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.menu-card__image:hover {
+  filter: brightness(0.93);
+}
+
+.menu-card__category {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin: 0 0 0.25rem 0;
+}
+
+.menu-card__badge {
+  font-size: 0.85rem;
+  margin: 0.25rem 0;
+}
+
+.menu-card__badge--special {
+  color: var(--color-primary-dark);
+}
+
+.menu-card__badge--fasting {
+  color: var(--color-secondary-dark);
+}
+
+.menu-card__price {
+  color: var(--color-primary);
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+
+.menu-card__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.menu-card__view-details {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-secondary-dark);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.menu-card__view-details:hover {
+  color: var(--color-primary);
+}
+
+.menu-card__add-btn {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.menu-card__add-btn:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}

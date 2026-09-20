@@ -1,16 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-
-const DELIVERY_FEE = 60;
-const FREE_DELIVERY_THRESHOLD = 1000;
-const VAT_RATE = 0.15;
-const VALID_COUPONS = { ADDIS10: 0.10 };
+import { calculateTotals, FREE_DELIVERY_THRESHOLD } from '../utils/pricing';
+import DishImage from './DishImage';
+import './CartView.css';
 
 function CartView() {
-  const { cart, removeFromCart, updateQuantity } = useCart();
+  const { cart, removeFromCart, updateQuantity, appliedCoupon, applyCoupon } = useCart();
   const [couponInput, setCouponInput] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState('');
 
   if (cart.length === 0) {
@@ -23,21 +20,12 @@ function CartView() {
     );
   }
 
-  const subtotal = cart.reduce((sum, entry) => sum + entry.item.priceETB * entry.quantity, 0);
-  const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE;
-  const discount = appliedCoupon ? subtotal * VALID_COUPONS[appliedCoupon] : 0;
-  const vat = (subtotal - discount) * VAT_RATE;
-  const total = subtotal - discount + deliveryFee + vat;
+  const { subtotal, deliveryFee, discount, vat, total } = calculateTotals(cart, appliedCoupon);
 
   const handleApplyCoupon = (e) => {
     e.preventDefault();
-    const code = couponInput.trim().toUpperCase();
-    if (VALID_COUPONS[code]) {
-      setAppliedCoupon(code);
-      setCouponError('');
-    } else {
-      setCouponError('Invalid coupon code.');
-    }
+    const success = applyCoupon(couponInput);
+    setCouponError(success ? '' : 'Invalid coupon code.');
   };
 
   return (
@@ -46,26 +34,33 @@ function CartView() {
         <h2>Your Order</h2>
         {cart.map((entry) => {
           const imageSrc = `/images/${encodeURIComponent(entry.item.nameEn)}.jpg`;
+          const unitPrice = entry.item.priceETB + (entry.extraPrice || 0);
           return (
-            <div key={entry.item.id} className="cart-item">
-              <img src={imageSrc} alt={entry.item.nameEn} className="cart-item__image" />
+            <div key={entry.cartLineId} className="cart-item">
+              <DishImage src={imageSrc} alt={entry.item.nameEn} className="cart-item__image" />
               <div className="cart-item__details">
                 <h4>{entry.item.nameEn}</h4>
                 <p className="cart-item__category">{entry.item.category}</p>
-                <p className="cart-item__price">ETB {entry.item.priceETB} each</p>
+                {entry.customization && (
+                  <p className="cart-item__customization">
+                    {entry.customization.spiceLevel} · {entry.customization.injera}
+                    {entry.customization.sides.length > 0 && ` · ${entry.customization.sides.join(', ')}`}
+                  </p>
+                )}
+                <p className="cart-item__price">ETB {unitPrice} each</p>
               </div>
               <div className="cart-item__actions">
                 <div className="cart-view__qty">
-                  <button className="cart-view__qty-btn" onClick={() => updateQuantity(entry.item.id, -1)}>
+                  <button className="cart-view__qty-btn" onClick={() => updateQuantity(entry.cartLineId, -1)}>
                     <i className="fa-solid fa-minus"></i>
                   </button>
                   <span>{entry.quantity}</span>
-                  <button className="cart-view__qty-btn" onClick={() => updateQuantity(entry.item.id, 1)}>
+                  <button className="cart-view__qty-btn" onClick={() => updateQuantity(entry.cartLineId, 1)}>
                     <i className="fa-solid fa-plus"></i>
                   </button>
                 </div>
-                <p className="cart-item__line-total">ETB {entry.item.priceETB * entry.quantity}</p>
-                <button className="cart-view__remove-btn" onClick={() => removeFromCart(entry.item.id)}>
+                <p className="cart-item__line-total">ETB {unitPrice * entry.quantity}</p>
+                <button className="cart-view__remove-btn" onClick={() => removeFromCart(entry.cartLineId)}>
                   Remove
                 </button>
               </div>
@@ -105,15 +100,21 @@ function CartView() {
           </p>
         )}
 
-        <form onSubmit={handleApplyCoupon} className="receipt__coupon">
-          <input
-            type="text"
-            value={couponInput}
-            onChange={(e) => setCouponInput(e.target.value)}
-            placeholder="Coupon code"
-          />
-          <button type="submit">Apply</button>
-        </form>
+        {appliedCoupon ? (
+          <p className="receipt__note">
+            <i className="fa-solid fa-circle-check"></i> Coupon "{appliedCoupon}" applied — carries over to checkout.
+          </p>
+        ) : (
+          <form onSubmit={handleApplyCoupon} className="receipt__coupon">
+            <input
+              type="text"
+              value={couponInput}
+              onChange={(e) => setCouponInput(e.target.value)}
+              placeholder="Coupon code"
+            />
+            <button type="submit">Apply</button>
+          </form>
+        )}
         {couponError && <p className="auth__error">{couponError}</p>}
 
         <Link to="/checkout" className="link-button receipt__checkout-btn">Proceed to Checkout</Link>

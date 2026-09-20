@@ -5,6 +5,7 @@ import DishDetailModal from '../componenets/DishDetailModal';
 import { useFetch } from '../hooks/useFetch';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import DishImage from '../componenets/DishImage';
 
 const SPECIALS_URL = 'https://addis-eats-backend.onrender.com/menu/specials';
 const MENU_URL = 'https://addis-eats-backend.onrender.com/menu/';
@@ -66,11 +67,11 @@ function Home() {
             <div className="hero__centerpiece">
               <p className="hero__centerpiece-label"><i className="fa-solid fa-crown"></i> Today's Centerpiece</p>
                             <Link to={`/dish/${centerpiece.id}`} className="hero__centerpiece-card">
-                <img
+                <DishImage
                   src={`/images/${encodeURIComponent(centerpiece.nameEn)}.jpg`}
                   alt={centerpiece.nameEn}
                   className="hero__centerpiece-image"
-                />
+                  />
                 <p className="hero__centerpiece-price">ETB {centerpiece.priceETB}</p>
               </Link>
             </div>

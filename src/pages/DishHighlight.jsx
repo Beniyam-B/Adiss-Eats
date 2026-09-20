@@ -14,11 +14,29 @@ const HERITAGE_BLURBS = {
   'Beverages & Tej': 'Brewed and served the traditional way, meant to be shared slowly, not rushed.',
 };
 
+const SPICE_OPTIONS = ['Mild', 'Traditional', 'Fiery Awaze'];
+
+const INJERA_OPTIONS = [
+  { id: 'standard', label: 'Standard Injera', price: 0 },
+  { id: 'teff', label: '100% Organic Brown Teff Injera', price: 60 },
+];
+
+const SIDE_OPTIONS = [
+  { id: 'ayib', label: 'Fresh Ayib', price: 0 },
+  { id: 'gomen', label: 'Stewed Gomen', price: 0 },
+  { id: 'awaze', label: 'House Awaze Paste', price: 0 },
+  { id: 'egg', label: 'Extra Braised Egg', price: 40 },
+];
+const MAX_SIDES = 2;
+
 function DishHighlight() {
   const { dishId } = useParams();
   const { data: menuData, loading, error } = useFetch(MENU_URL);
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [spiceChoice, setSpiceChoice] = useState('Traditional');
+  const [injeraChoice, setInjeraChoice] = useState('standard');
+  const [selectedSides, setSelectedSides] = useState([]);
 
   if (loading) return <p className="status">Loading dish...</p>;
   if (error) return <p className="status status--error">Could not load this dish: {error}</p>;
@@ -43,9 +61,26 @@ function DishHighlight() {
     .filter((d) => d.category === 'Beverages & Tej' && d.id !== item.id)
     .slice(0, 3);
 
+  const toggleSide = (sideId) => {
+    setSelectedSides((prev) => {
+      if (prev.includes(sideId)) return prev.filter((id) => id !== sideId);
+      if (prev.length >= MAX_SIDES) return prev;
+      return [...prev, sideId];
+    });
+  };
+
+  const injeraOption = INJERA_OPTIONS.find((o) => o.id === injeraChoice);
+  const chosenSides = SIDE_OPTIONS.filter((o) => selectedSides.includes(o.id));
+  const extraPrice = injeraOption.price + chosenSides.reduce((sum, o) => sum + o.price, 0);
+
   const handleAddToCart = () => {
+    const customization = {
+      spiceLevel: spiceChoice,
+      injera: injeraOption.label,
+      sides: chosenSides.map((o) => o.label),
+    };
     for (let i = 0; i < quantity; i++) {
-      addToCart(item);
+      addToCart(item, customization, extraPrice);
     }
   };
 
@@ -93,6 +128,57 @@ function DishHighlight() {
             <p><strong>Ingredients:</strong> {ingredients.join(', ')}</p>
           </div>
 
+          <div className="info-box dish-highlight__customize">
+            <h3>Customize Your Order</h3>
+
+            <fieldset className="dish-highlight__option-group">
+              <legend>Heat & Spice Level</legend>
+              {SPICE_OPTIONS.map((option) => (
+                <label key={option} className="dish-highlight__radio">
+                  <input
+                    type="radio"
+                    name="spice"
+                    value={option}
+                    checked={spiceChoice === option}
+                    onChange={(e) => setSpiceChoice(e.target.value)}
+                  />
+                  {option}
+                </label>
+              ))}
+            </fieldset>
+
+            <fieldset className="dish-highlight__option-group">
+              <legend>Injera Base</legend>
+              {INJERA_OPTIONS.map((option) => (
+                <label key={option.id} className="dish-highlight__radio">
+                  <input
+                    type="radio"
+                    name="injera"
+                    value={option.id}
+                    checked={injeraChoice === option.id}
+                    onChange={(e) => setInjeraChoice(e.target.value)}
+                  />
+                  {option.label} {option.price > 0 && `(+ETB ${option.price})`}
+                </label>
+              ))}
+            </fieldset>
+
+            <fieldset className="dish-highlight__option-group">
+              <legend>Side Accents (choose up to {MAX_SIDES})</legend>
+              {SIDE_OPTIONS.map((option) => (
+                <label key={option.id} className="dish-highlight__checkbox">
+                  <input
+                    type="checkbox"
+                    checked={selectedSides.includes(option.id)}
+                    onChange={() => toggleSide(option.id)}
+                    disabled={!selectedSides.includes(option.id) && selectedSides.length >= MAX_SIDES}
+                  />
+                  {option.label} {option.price > 0 && `(+ETB ${option.price})`}
+                </label>
+              ))}
+            </fieldset>
+          </div>
+
           <div className="dish-highlight__add-row">
             <div className="dish-highlight__qty">
               <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>
@@ -104,7 +190,7 @@ function DishHighlight() {
               </button>
             </div>
             <button className="modal__add-btn" onClick={handleAddToCart}>
-              Add to Cart • ETB {priceETB * quantity}
+              Add to Cart • ETB {(priceETB + extraPrice) * quantity}
             </button>
           </div>
         </div>
