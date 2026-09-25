@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MenuItemCard from '../componenets/MenuItemCard';
 import DishDetailModal from '../componenets/DishDetailModal';
-import { useFetch } from '../hooks/useFetch';
-import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
 import SkeletonCard from '../componenets/SkeletonCard';
+import { useFetch } from '../hooks/useFetch';
+import { useAuthStore } from '../store/useAuthStore';
+import { useCartStore } from '../store/useCartStore';
 import { useRecentlyViewed } from '../context/RecentlyViewedContext';
 
 const SPECIALS_URL = 'https://addis-eats-backend.onrender.com/menu/specials';
@@ -18,8 +18,9 @@ const TESTIMONIALS = [
 ];
 
 function Home() {
-  const { user } = useAuth();
-  const { addToCart } = useCart();
+  // throw new Error('test')
+  const user = useAuthStore((state) => state.user);
+  const addToCart = useCartStore((state) => state.addToCart);
   const { recentlyViewed } = useRecentlyViewed();
   const { data: specialsData, loading, error } = useFetch(SPECIALS_URL);
   const { data: menuData } = useFetch(MENU_URL);

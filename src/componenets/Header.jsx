@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../store/useAuthStore';
 import './Header.css';
 
 function Header({ cartCount }) {
-  const { user, logout } = useAuth();
+    const user = useAuthStore((state) => state.user);
+    const logout = useAuthStore((state) => state.logout);
+  const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const navClass = ({ isActive }) => `header__nav-link ${isActive ? 'header__nav-link--active' : ''}`;
   const closeMenu = () => setMenuOpen(false);
@@ -27,22 +29,24 @@ function Header({ cartCount }) {
       <nav className={`header__nav ${menuOpen ? 'header__nav--open' : ''}`}>
         <NavLink to="/" end className={navClass} onClick={closeMenu}>Today's Specials</NavLink>
         <NavLink to="/menu" className={navClass} onClick={closeMenu}>Full Menu</NavLink>
-        {!user && <NavLink to="/login" className={navClass} onClick={closeMenu}>Login</NavLink>}
-      </nav>
-
-      <div className="header__account">
-        {user && (
+        <NavLink to="/legal" className={navClass} onClick={closeMenu}>Legal</NavLink>
+        {user ? (
           <>
             <span className="header__greeting">Hi, {user.name}</span>
-            <button className="header__logout" onClick={logout}>
+            <button className="header__logout" onClick={() => { logout(); closeMenu(); }}>
               <i className="fa-solid fa-right-from-bracket"></i> Logout
             </button>
           </>
+        ) : pathname === '/login' ? (
+          <NavLink to="/register" className={navClass} onClick={closeMenu}>Register</NavLink>
+        ) : (
+          <NavLink to="/login" className={navClass} onClick={closeMenu}>Login</NavLink>
         )}
-        <NavLink to="/cart" className="header__cart" onClick={closeMenu}>
-          <i className="fa-solid fa-cart-shopping"></i> {cartCount}
-        </NavLink>
-      </div>
+      </nav>
+
+      <NavLink to="/cart" className="header__cart" onClick={closeMenu}>
+        <i className="fa-solid fa-cart-shopping"></i> {cartCount}
+      </NavLink>
     </header>
   );
 }

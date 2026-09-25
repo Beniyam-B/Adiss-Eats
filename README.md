@@ -19,6 +19,8 @@ A food ordering web app built with React + Vite as part of the CodeOps Full Stac
 - Sort menu by price/name, "Clear Filters" on empty results
 - Per-page browser tab titles, scroll-to-top on navigation
 - Graceful fallback image if a dish photo fails to load
+- Recently Viewed dishes section, persisted across sessions
+- Skeleton loading states for menu, specials, and dish pages
 
 ## Tech Stack
 

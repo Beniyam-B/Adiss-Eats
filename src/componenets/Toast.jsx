@@ -1,7 +1,7 @@
-import { useCart } from '../context/CartContext';
+import { useCartStore } from '../store/useCartStore';
 
 function Toast() {
-  const { toast } = useCart();
+  const toast = useCartStore((state) => state.toast);
 
   if (!toast) return null;
 

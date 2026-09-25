@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import Modal from './Modal';
 import DishImage from './DishImage';
-import { useCart } from '../context/CartContext';
+import { useCartStore } from '../store/useCartStore';
 import { useRecentlyViewed } from '../context/RecentlyViewedContext';
 import { getSpiceLevel, cleanSpiceLabel } from '../utils/spice';
 
 function DishDetailModal({ item, onClose }) {
-  const { addToCart } = useCart();
+  const addToCart = useCartStore((state) => state.addToCart);
   const { addViewed } = useRecentlyViewed();
 
   useEffect(() => {
@@ -34,15 +34,19 @@ function DishDetailModal({ item, onClose }) {
       )}
       <p>{description}</p>
       <div className="info-box modal__facts">
-        <p className="spice-rating">
-          <strong>Spice level:</strong> {cleanSpiceLabel(spiceLevel)}{' '}
-          {[1, 2, 3].map((n) => (
-            <i
-              key={n}
-              className={`fa-solid fa-pepper-hot spice-rating__pepper ${n <= spiceRating ? 'spice-rating__pepper--active' : ''}`}
-            ></i>
-          ))}
-        </p>
+                {spiceRating ? (
+          <p className="spice-rating">
+            <strong>Spice level:</strong> {cleanSpiceLabel(spiceLevel)}{' '}
+            {[1, 2, 3].map((n) => (
+              <i
+                key={n}
+                className={`fa-solid fa-pepper-hot spice-rating__pepper ${n <= spiceRating ? 'spice-rating__pepper--active' : ''}`}
+              ></i>
+            ))}8
+          </p>
+        ) : (
+          <p className="spice-rating spice-rating--text"><strong>Notes:</strong> {spiceLevel}</p>
+        )}
         <p><strong>Servings:</strong> {servings}</p>
         <p><strong>Ingredients:</strong> {ingredients.join(', ')}</p>
       </div>

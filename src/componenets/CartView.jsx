@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { calculateTotals, FREE_DELIVERY_THRESHOLD } from '../utils/pricing';
+import { useCartStore } from '../store/useCartStore';
 import DishImage from './DishImage';
-import './CartView.css';
+import { calculateTotals, FREE_DELIVERY_THRESHOLD } from '../utils/pricing';
 
 function CartView() {
-  const { cart, removeFromCart, updateQuantity, appliedCoupon, applyCoupon } = useCart();
+  const cart = useCartStore((state) => state.cart);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const appliedCoupon = useCartStore((state) => state.appliedCoupon);
+  const applyCoupon = useCartStore((state) => state.applyCoupon);
+
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState('');
 
@@ -115,7 +119,7 @@ function CartView() {
             <button type="submit">Apply</button>
           </form>
         )}
-        {couponError && <p className="auth__error">{couponError}</p>}
+        {couponError && <p className="field__error">{couponError}</p>}
 
         <Link to="/checkout" className="link-button receipt__checkout-btn">Proceed to Checkout</Link>
       </aside>

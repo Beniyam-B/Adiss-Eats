@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
-import { useCart } from '../context/CartContext';
+import { useCartStore } from '../store/useCartStore';
 import { useRecentlyViewed } from '../context/RecentlyViewedContext';
 import { getSpiceLevel, cleanSpiceLabel } from '../utils/spice';
 import Skeleton from '../componenets/Skeleton';
@@ -34,7 +34,7 @@ const MAX_SIDES = 2;
 function DishHighlight() {
   const { dishId } = useParams();
   const { data: menuData, loading, error } = useFetch(MENU_URL);
-  const { addToCart } = useCart();
+  const addToCart = useCartStore((state) => state.addToCart);
   const { addViewed } = useRecentlyViewed();
   const [quantity, setQuantity] = useState(1);
   const [spiceChoice, setSpiceChoice] = useState('Traditional');
@@ -140,15 +140,19 @@ function DishHighlight() {
           <div className="info-box dish-highlight__facts">
             <p><strong>Category:</strong> {category}</p>
             <p><strong>Servings:</strong> {servings}</p>
-            <p className="spice-rating">
-              <strong>Spice level:</strong> {cleanSpiceLabel(spiceLevel)}{' '}
-              {[1, 2, 3].map((n) => (
-                <i
-                  key={n}
-                  className={`fa-solid fa-pepper-hot spice-rating__pepper ${n <= spiceRating ? 'spice-rating__pepper--active' : ''}`}
-                ></i>
-              ))}
-            </p>
+                        {spiceRating ? (
+              <p className="spice-rating">
+                <strong>Spice level:</strong> {cleanSpiceLabel(spiceLevel)}{' '}
+                {[1, 2, 3].map((n) => (
+                  <i
+                    key={n}
+                    className={`fa-solid fa-pepper-hot spice-rating__pepper ${n <= spiceRating ? 'spice-rating__pepper--active' : ''}`}
+                  ></i>
+                ))}
+              </p>
+            ) : (
+              <p className="spice-rating spice-rating--text"><strong>Notes:</strong> {spiceLevel}</p>
+            )}
             <p><strong>Ingredients:</strong> {ingredients.join(', ')}</p>
           </div>
 
