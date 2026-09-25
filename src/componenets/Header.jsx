@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import './Header.css';
@@ -10,6 +10,19 @@ function Header({ cartCount }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const navClass = ({ isActive }) => `header__nav-link ${isActive ? 'header__nav-link--active' : ''}`;
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    const closeOnDesktop = () => {
+      if (window.innerWidth > 720) {
+        setMenuOpen(false);
+      }
+    };
+
+    closeOnDesktop();
+    window.addEventListener('resize', closeOnDesktop);
+
+    return () => window.removeEventListener('resize', closeOnDesktop);
+  }, []);
 
   return (
     <header className="header">

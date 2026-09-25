@@ -21,6 +21,11 @@ A food ordering web app built with React + Vite as part of the CodeOps Full Stac
 - Graceful fallback image if a dish photo fails to load
 - Recently Viewed dishes section, persisted across sessions
 - Skeleton loading states for menu, specials, and dish pages
+- Cart and auth state managed with Zustand (persisted, no Provider)
+- Form validation via react-hook-form + Zod (Login, Register, Checkout)
+- Pickup vs Delivery option at checkout, with live fee adjustment
+- Add-to-cart button becomes a quantity stepper once a dish is in the cart
+- Sticky header with color scheme distinct from the hero
 
 ## Tech Stack
 

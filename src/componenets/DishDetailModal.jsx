@@ -42,7 +42,7 @@ function DishDetailModal({ item, onClose }) {
                 key={n}
                 className={`fa-solid fa-pepper-hot spice-rating__pepper ${n <= spiceRating ? 'spice-rating__pepper--active' : ''}`}
               ></i>
-            ))}8
+            ))}
           </p>
         ) : (
           <p className="spice-rating spice-rating--text"><strong>Notes:</strong> {spiceLevel}</p>
