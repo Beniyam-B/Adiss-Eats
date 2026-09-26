@@ -6,7 +6,7 @@ import { registerSchema } from '../schemas/formSchemas';
 import Field from '../componenets/Field';
 
 function Register() {
-  const login = useAuthStore((state) => state.login);
+  const registerUser = useAuthStore((state) => state.register);
   const navigate = useNavigate();
   const {
     register,
@@ -19,7 +19,7 @@ function Register() {
   });
 
   const onSubmit = (data) => {
-    login({ name: data.name, email: data.email, phone: data.phone });
+    registerUser({ name: data.name, email: data.email, phone: data.phone });
     navigate('/');
   };
 

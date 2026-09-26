@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MenuItemCard from '../componenets/MenuItemCard';
 import DishDetailModal from '../componenets/DishDetailModal';
+import DishImage from '../componenets/DishImage';
 import SkeletonCard from '../componenets/SkeletonCard';
 import { useFetch } from '../hooks/useFetch';
 import { useAuthStore } from '../store/useAuthStore';
@@ -18,7 +19,6 @@ const TESTIMONIALS = [
 ];
 
 function Home() {
-  // throw new Error('test')
   const user = useAuthStore((state) => state.user);
   const addToCart = useCartStore((state) => state.addToCart);
   const { recentlyViewed } = useRecentlyViewed();
@@ -70,7 +70,7 @@ function Home() {
             <div className="hero__centerpiece">
               <p className="hero__centerpiece-label"><i className="fa-solid fa-crown"></i> Today's Centerpiece</p>
               <Link to={`/dish/${centerpiece.id}`} className="hero__centerpiece-card">
-                <img
+                <DishImage
                   src={`/images/${encodeURIComponent(centerpiece.nameEn)}.jpg`}
                   alt={centerpiece.nameEn}
                   className="hero__centerpiece-image"

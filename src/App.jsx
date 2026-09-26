@@ -5,8 +5,9 @@ import Layout from './Layout';
 import ProtectedRoute from './componenets/ProtectedRoute';
 import ScrollToTop from './componenets/ScrollToTop';
 import PageTitle from './componenets/PageTitle';
+import Home from './pages/Home';
 
-const Home = lazy(() => import('./pages/Home'));
+
 const FullMenu = lazy(() => import('./pages/FullMenu'));
 const DishHighlight = lazy(() => import('./pages/DishHighlight'));
 const Login = lazy(() => import('./pages/Login'));

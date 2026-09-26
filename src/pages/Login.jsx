@@ -11,6 +11,7 @@ function Login() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginSchema),
@@ -19,7 +20,13 @@ function Login() {
   });
 
   const onSubmit = (data) => {
-    login({ name: data.name, phone: data.phone });
+    const success = login({ name: data.name, phone: data.phone });
+    if (!success) {
+      setError('root', {
+        message: 'No account found with that name and phone number. Please register first.',
+      });
+      return;
+    }
     navigate('/');
   };
 
@@ -37,6 +44,11 @@ function Login() {
             {...register('phone')}
             error={errors.phone?.message}
           />
+          {errors.root && (
+            <p role="alert" className="field__error">
+              {errors.root.message}
+            </p>
+          )}
           <button type="submit" className="auth__submit" disabled={isSubmitting}>
             {isSubmitting ? 'Signing In...' : 'Continue'}
           </button>

@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useRef } from 'react';
+import './Modal.css';
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
